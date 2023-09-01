@@ -355,13 +355,27 @@ display: none;
 <div id="analyzing-the-frequency-and-location-of-shipwrecks" class="section level1">
 <h1>Analyzing the Frequency and Location of Shipwrecks</h1>
 <p>This project is inspired by a data set I found on Kaggle containing
-the names of shipwrecks, the year they sunk, their coordinates, and some
-notes about their sinking.</p>
-<p><code>{r} library(tidyverse) library(plotly)</code></p>
-<p>The data set did not appear to contain a unique ID field. Before
+the names of shipwrecks, the year they occurred, their coordinates, and
+some notes about their sinking.</p>
+<p><code>{r} library(tidyverse) library(plotly) Shipwrecks &lt;- read_csv(&quot;~/GitHub/Analyzing-Shipwrecks/Shipwrecks and Sunken Ships.csv&quot;, na = &#39;&#39;) glimpse(Shipwrecks)</code></p>
+<p>The data set did not appear to contain a unique identifier. Before
 cleaning the data, I wanted to check if any ship names were
 duplicated.</p>
 <p><code>{r} Shipwrecks$Ship[duplicated(Shipwrecks$Ship)]</code></p>
+<p>Wow! 241 ship names were repeated. It is possible that ship names
+have been reused throughout history. Let’s see if any records are
+complete duplicates.</p>
+<p><code>{r} duplicates &lt;- duplicated(Shipwrecks) Shipwrecks[duplicates, ]</code></p>
+<p>It appears four records are duplicates. It will be best to remove
+them.</p>
+<p><code>{r} Shipwrecks &lt;- unique(Shipwrecks)</code></p>
+<p>We should add a unique identifier to prevent mixing up shipwrecks
+with the same name.</p>
+<p><code>{r} Shipwrecks &lt;- rowid_to_column(Shipwrecks, &quot;Ship_Id&quot;)</code></p>
+<p>We want to know just the year that each shipwreck occurred. Looking
+at the ‘Sunk date’ column though, it appears the dates are in all sorts
+of different formats.</p>
+<p><code>{r} Shipwrecks &lt;- Shipwrecks %&gt;%   mutate(Year_Sunk = ifelse(!is.na(lubridate::dmy(Shipwrecks$`Sunk date`)), as.character(year(lubridate::dmy(Shipwrecks$`Sunk date`))),                      ifelse(!is.na(lubridate::my(Shipwrecks$`Sunk date`)), as.character(year(lubridate::my(Shipwrecks$`Sunk date`))), NA)))</code></p>
 </div>
 
 
