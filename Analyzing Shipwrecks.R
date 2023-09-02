@@ -12,7 +12,8 @@ count(Shipwrecks)
 # 3,959
 
 # Can we use ship names as a unique identifier?
-Shipwrecks$Ship[duplicated(Shipwrecks$Ship)]
+duplicates <- duplicated(Shipwrecks$Ship)
+View(duplicates)
 # No, 241 ship names are duplicates. A lot of wrecks do not even include a ship name.
 
 # Are there any duplicate rows?
